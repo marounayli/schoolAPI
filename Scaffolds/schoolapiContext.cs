@@ -15,6 +15,7 @@ namespace AppDist.Scaffolds
         {
         }
 
+        public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<Coursemembership> Coursemembership { get; set; }
         public virtual DbSet<Student> Student { get; set; }
@@ -24,12 +25,30 @@ namespace AppDist.Scaffolds
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=schoolapi");
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=schoolAPI");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.HasKey(e => e.Email)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("admin");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Password)
+                    .HasColumnName("password")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Course>(entity =>
             {
                 entity.ToTable("course");
