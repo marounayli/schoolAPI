@@ -8,9 +8,11 @@ using AppDist.Scaffolds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppDist.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("Student")]
     public class StudentsController : ControllerBase

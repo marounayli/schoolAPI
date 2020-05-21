@@ -9,7 +9,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Http;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 namespace AppDist
 {
     public class Startup
@@ -37,10 +40,34 @@ namespace AppDist
             });
 
             services.AddDbContext<schoolapiContext>(options =>
-        {
-            options.UseMySQL(
-            @"Server=localhost;Database=SchoolAPI;Uid=root;Pwd=root;");
-        });
+            {
+                options.UseMySQL(
+                @"Server=localhost;Database=SchoolAPI;Uid=root;Pwd=root;");
+            });
+
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
         }
 
@@ -51,23 +78,26 @@ namespace AppDist
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            // app.UseHttpsRedirection();
             app.UseRouting();
-
-            app.UseAuthorization();
             app.UseSwagger();
+            app.UseRouting();
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    c.RoutePrefix = string.Empty;
-});
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            // DummyData.Initialize(app);
-
         }
     }
 }

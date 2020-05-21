@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AppDist.Scaffolds;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppDist.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class SubscriptionController : ControllerBase
@@ -75,7 +77,7 @@ namespace AppDist.Controllers
             context.Coursemembership.Add(sub);
             await context.SaveChangesAsync();
 
-            return CreatedAtAction("Successfully subscribed student", new { CourseID = sub.CourseId, StudentID = sub.StudentId });
+            return Created("Successfully subscribed", sub);
         }
 
         [HttpDelete]
@@ -87,7 +89,7 @@ namespace AppDist.Controllers
                 return BadRequest(ModelState);
             }
 
-            context.Coursemembership.Add(sub);
+            context.Coursemembership.Remove(sub);
             await context.SaveChangesAsync();
 
             return NoContent();

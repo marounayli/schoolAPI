@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using AppDist.Scaffolds;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
 
 namespace AppDist.Controllers
@@ -24,7 +25,7 @@ namespace AppDist.Controllers
             this.context = context;
             this._linkgenerator = linkGenerator;
         }
-
+        [Authorize]
         [HttpGet]
         [Route("all")]
         public IEnumerable<Course> getAllCourses()

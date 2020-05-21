@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AppDist.Scaffolds;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppDist.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TeacherController : ControllerBase
