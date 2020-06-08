@@ -25,7 +25,7 @@ namespace AppDist.Scaffolds
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=root;database=schoolAPI");
+                optionsBuilder.UseMySQL("server=192.185.7.80;port=3306;user=esibs_siteadmin;password=72v1cgM@;database=esibsocial_schoolAPI");
             }
         }
 

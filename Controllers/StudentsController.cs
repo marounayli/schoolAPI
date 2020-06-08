@@ -33,7 +33,7 @@ namespace AppDist.Controllers
         [Route("getcourses/{id}")]
         async public Task<IActionResult> GetAllCoursesForStudent([FromRoute] string id)
         {
-            var courses = await context.Student.Where(x => x.Id == id).Select(x => x.Coursemembership.Select(y => y.Course.CourseCode))
+            var courses = await context.Student.Where(x => x.Id == id).SelectMany(x => x.Coursemembership.Select(y => y.Course))
             .ToListAsync();
             return Ok(courses);
         }

@@ -34,21 +34,21 @@ namespace AppDist.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> authenticate([FromBody] Admin admin)
+        public  IActionResult authenticate([FromBody] Admin admin)
         {
-            // Console.WriteLine(admin.Email);
-            // Console.WriteLine(admin.Password);
-            // var _admin = await context.Admin.Where(x => x.Email == admin.Email).FirstAsync();
-            // if (admin == null)
-            // {
-            //     return NotFound("Username" + admin.Email + "was not found on the server");
-            // }
-            // SHA1 sha = new SHA1CryptoServiceProvider();
-            // byte[] bytes = ASCIIEncoding.UTF8.GetBytes(admin.Password);
-            // byte[] computedhash = sha.ComputeHash(bytes);
-            // String _password = BitConverter.ToString(computedhash).Replace("-", "").ToLower();
-            // if (_password == _admin.Password)
-            //{
+            Console.WriteLine(admin.Email);
+            Console.WriteLine(admin.Password);
+            var _admin = context.Admin.Where(x => x.Email == admin.Email).First();
+            if (admin == null)
+            {
+                return NotFound("Username" + admin.Email + "was not found on the server");
+            }
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            byte[] bytes = ASCIIEncoding.UTF8.GetBytes(admin.Password);
+            byte[] computedhash = sha.ComputeHash(bytes);
+            String _password = BitConverter.ToString(computedhash).Replace("-", "").ToLower();
+            if (_password == _admin.Password)
+            {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appsettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -63,8 +63,8 @@ namespace AppDist.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return Ok(tokenHandler.WriteToken(token));
-            //}
-            //   return NotFound();
+            }
+            return NotFound();
         }
     }
 }
